@@ -1,5 +1,5 @@
-﻿using Demo.BusinessLogic.DTOs;
-using Demo.DataAccess.Models;
+﻿using Demo.BusinessLogic.DTOs.DepartmentDtos;
+using Demo.DataAccess.Models.DepartmentModels;
 
 namespace Demo.BusinessLogic.Factories
 {

@@ -1,5 +1,6 @@
 ﻿using Demo.BusinessLogic.DTOs;
-using Demo.BusinessLogic.Services;
+using Demo.BusinessLogic.DTOs.DepartmentDtos;
+using Demo.BusinessLogic.Services.Interfaces;
 using Demo.Peresentation.ViewModels.DepartmentsviewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -132,6 +133,44 @@ namespace Demo.Presentation.Controllers
                 }
             }
             return View(departmentEditViewModel);
+        }
+        #endregion
+
+
+        #region Delete
+        //[HttpGet]
+        //public IActionResult Delete(int? id)
+        //{
+        //    if (!id.HasValue) return BadRequest();
+        //    var department = _departmentService.GetDepartmentById(id.Value);
+        //    if (department is null) return NotFound();
+        //    return View(department);
+        //}
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            if (id==0) return BadRequest();
+            try
+            {
+                var isDeleted = _departmentService.DeleteDepartment(id);
+                if (isDeleted) return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(String.Empty, "Department Can't Be Deleted");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_env.IsDevelopment())
+                {
+                    ModelState.AddModelError(String.Empty, ex.Message);
+                }
+                else
+                {
+                    _logger.LogError(ex.Message);
+                }
+            }
+            return View(nameof  (Delete),new { id });
         }
         #endregion
 
