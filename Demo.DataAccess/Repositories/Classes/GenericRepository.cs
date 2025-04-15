@@ -1,12 +1,6 @@
 ﻿using Demo.DataAccess.Contexts;
-using Demo.DataAccess.Repositories.Interface;
 using Demo.DataAccess.Models.Shared;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Demo.DataAccess.Repositories.Interface;
 
 namespace Demo.DataAccess.Repositories.Classes
 {
@@ -17,9 +11,9 @@ namespace Demo.DataAccess.Repositories.Classes
         public IEnumerable<TEntity> GetAll(bool withTracking = false)
         {
             if (withTracking)
-                return dbContext.Set<TEntity>().ToList();
+                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted == false).ToList();
             else
-                return dbContext.Set<TEntity>().AsNoTracking().ToList();
+                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted == false).AsNoTracking().ToList();
         }
 
         // GetById
@@ -48,6 +42,10 @@ namespace Demo.DataAccess.Repositories.Classes
             dbContext.Set<TEntity>().Remove(entity);
             return dbContext.SaveChanges();
         }
-
+        public IEnumerable<TResult> GetAll<TResult>(System.Linq.Expressions.Expression<Func<TEntity, TResult>> selector)
+        {
+            return dbContext.Set<TEntity>()
+                             .Select(selector).ToList();
+        }
     }
 }

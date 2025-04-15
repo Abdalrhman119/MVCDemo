@@ -27,14 +27,21 @@ namespace Demo.Presentation.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateDepartmentDto dto)
+        public IActionResult Create(DepartmentViewModel departmentVM)
         {
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int res = _departmentService.CreateDepartment(dto);
+                    var CreateDepartmentDto = new CreateDepartmentDto()
+                    {
+                        Name = departmentVM.Name,
+                        Code = departmentVM.Code,
+                        Description = departmentVM.Description,
+                        DateOfCreation = departmentVM.DateOfCreation
+                    };
+                    int res = _departmentService.CreateDepartment(CreateDepartmentDto);
                     if (res > 0) return RedirectToAction(nameof(Index));
                     else
                     {
@@ -56,7 +63,7 @@ namespace Demo.Presentation.Controllers
                 }
 
             }
-            return View(dto);
+            return View(departmentVM);
         }
         #endregion
 
@@ -85,7 +92,7 @@ namespace Demo.Presentation.Controllers
             if (department is null) return NotFound();
             else
             {
-                var departmentViewModel = new DepartmentEditViewModel()
+                var departmentViewModel = new DepartmentViewModel()
                 {
                     Name = department.Name,
                     Code = department.Code,
@@ -98,9 +105,9 @@ namespace Demo.Presentation.Controllers
         }
 
 
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Edit([FromRoute]int id,DepartmentEditViewModel departmentEditViewModel)
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentEditViewModel)
         {
             if (!ModelState.IsValid) return View(departmentEditViewModel);
             try
@@ -149,7 +156,7 @@ namespace Demo.Presentation.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            if (id==0) return BadRequest();
+            if (id == 0) return BadRequest();
             try
             {
                 var isDeleted = _departmentService.DeleteDepartment(id);
@@ -170,7 +177,7 @@ namespace Demo.Presentation.Controllers
                     _logger.LogError(ex.Message);
                 }
             }
-            return View(nameof  (Delete),new { id });
+            return View(nameof(Delete), new { id });
         }
         #endregion
 

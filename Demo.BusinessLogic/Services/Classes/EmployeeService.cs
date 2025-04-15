@@ -16,9 +16,16 @@ namespace Demo.BusinessLogic.Services.Classes
     {
         public IEnumerable<GetEmployeeDto> GetAllEmployees()
         {
-            var employees = _employeeRepository.GetAll();
-            return _mapper.Map<IEnumerable<GetEmployeeDto>>(employees);
-        }
+            var emps = _employeeRepository.GetAll();
+            return _mapper.Map<IEnumerable<GetEmployeeDto>>(emps);
+//            var employee = _employeeRepository.GetAll(e=>new GetEmployeeDto()
+//            {
+//                Id = e.Id,
+//                Name = e.Name,
+//                Age = e.Age,
+//            });
+//return employee;
+  }
 
         public EmployeeDetailsDto? GetEmployeeById(int id)
         {

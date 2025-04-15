@@ -4,6 +4,7 @@ using Demo.BusinessLogic.Services.Interfaces;
 using Demo.DataAccess.Contexts;
 using Demo.DataAccess.Repositories.Classes;
 using Demo.DataAccess.Repositories.Interface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Peresentation
@@ -14,7 +15,9 @@ namespace Demo.Peresentation
         {
             var builder = WebApplication.CreateBuilder(args);
             #region Add services to the container
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(option => {
+                option.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
@@ -23,7 +26,6 @@ namespace Demo.Peresentation
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);

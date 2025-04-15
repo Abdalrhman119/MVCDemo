@@ -19,6 +19,13 @@ namespace Demo.Peresentation.Controllers
             var employees = _employeeService.GetAllEmployees();
             return View(employees);
         }
+
+
+
+
+
+
+
         #region Create Department
         [HttpGet]
         public IActionResult Create()
@@ -59,7 +66,6 @@ namespace Demo.Peresentation.Controllers
             return View(createdEmployeeDto);
         }
         #endregion
-
         #region Details Of Employee
 
         [HttpGet]
@@ -135,10 +141,6 @@ namespace Demo.Peresentation.Controllers
 
 
         #endregion
-
-
-
-
         #region Delete Employee
 
         //[HttpGet]
@@ -184,8 +186,5 @@ namespace Demo.Peresentation.Controllers
         }
 
         #endregion
-
-
-
     }
 }
