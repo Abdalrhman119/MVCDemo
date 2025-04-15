@@ -2,6 +2,7 @@
 using Demo.BusinessLogic.DTOs.EmployeeDtos;
 using Demo.BusinessLogic.Services.Classes;
 using Demo.BusinessLogic.Services.Interfaces;
+using Demo.DataAccess.Models.DepartmentModels;
 using Demo.DataAccess.Models.EmployeeModels;
 using Demo.DataAccess.Models.SharedModels;
 using Demo.Peresentation.ViewModels.EmployeesviewModels;
@@ -19,28 +20,35 @@ namespace Demo.Peresentation.Controllers
             var employees = _employeeService.GetAllEmployees();
             return View(employees);
         }
-
-
-
-
-
-
-
         #region Create Department
         [HttpGet]
         public IActionResult Create()
         {
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(CreateEmployeeDto createdEmployeeDto)
+        public IActionResult Create(EmployeeviewModel EmployeeVM)
         {
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var createdEmployeeDto=new CreateEmployeeDto() {
+                        Name = EmployeeVM.Name,
+                        Address = EmployeeVM.Address,
+                        Age = EmployeeVM.Age,   
+                        DepartmentId = EmployeeVM.DepartmentId,
+                        Email = EmployeeVM.Email,   
+                        Gender = EmployeeVM.Gender,
+                        HiringDate = EmployeeVM.HiringDate,
+                        EmployeeType = EmployeeVM.EmployeeType,
+                        IsActive = EmployeeVM.IsActive,
+                        PhoneNumber = EmployeeVM.PhoneNumber,
+                        Salary = EmployeeVM.Salary
+                    };
                     int res = _employeeService.CreateEmployee(createdEmployeeDto);
                     if (res > 0) return RedirectToAction(nameof(Index));
                     else
@@ -63,7 +71,7 @@ namespace Demo.Peresentation.Controllers
                 }
 
             }
-            return View(createdEmployeeDto);
+            return View(EmployeeVM);
         }
         #endregion
         #region Details Of Employee
@@ -85,9 +93,8 @@ namespace Demo.Peresentation.Controllers
             var employee = _employeeService.GetEmployeeById(id.Value);
             if (employee == null) return NotFound();
 
-            var updateEmployeeDto = new UpdateEmployeeDto()
+            var employeeVM = new EmployeeviewModel()
             {
-                Id = employee.Id,
                 Name = employee.Name,
                 Age = employee.Age,
                 Address = employee.Address,
@@ -97,27 +104,40 @@ namespace Demo.Peresentation.Controllers
                 PhoneNumber = employee.PhoneNumber,
                 EmployeeType = Enum.Parse<EmployeeType>(employee.EmployeeType),
                 HiringDate = employee.HiringDate,
-                Gender = Enum.Parse<Gender>(employee.Gender)
+                Gender = Enum.Parse<Gender>(employee.Gender),
+                DepartmentId = employee.DepartmentId
             };
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
 
-            return View(updateEmployeeDto); 
+            return View(employeeVM); 
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, UpdateEmployeeDto updateEmployeeDto)
+        public IActionResult Edit([FromRoute] int id, EmployeeviewModel employeeVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(updateEmployeeDto);
-            }
-
+            if (!ModelState.IsValid) return View(employeeVM);
             try
             {
-                int? res = _employeeService.UpdateEmployee(updateEmployeeDto);
-
-                if (res.HasValue && res.Value > 0) 
+                var employeeDto = new UpdateEmployeeDto()
                 {
-                    return RedirectToAction(nameof(Index)); 
+                    Id = id,
+                    Name = employeeVM.Name,
+                    Age = employeeVM.Age,
+                    Address = employeeVM.Address,
+                    Salary = employeeVM.Salary,
+                    IsActive = employeeVM.IsActive,
+                    Email = employeeVM.Email,
+                    PhoneNumber = employeeVM.PhoneNumber,
+                    EmployeeType = employeeVM.EmployeeType,
+                    HiringDate = employeeVM.HiringDate,
+                    Gender = employeeVM.Gender,
+                    DepartmentId = employeeVM.DepartmentId
+                };
+                var res = _employeeService.UpdateEmployee(employeeDto);
+
+                if (res.HasValue && res.Value > 0)
+                {
+                    return RedirectToAction(nameof(Index));
                 }
                 else
                 {
@@ -136,7 +156,7 @@ namespace Demo.Peresentation.Controllers
                 }
             }
 
-            return View(updateEmployeeDto); 
+            return View(employeeVM);
         }
 
 

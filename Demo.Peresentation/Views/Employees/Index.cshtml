@@ -20,6 +20,7 @@
                 <th>@Html.DisplayNameFor(e => e.Salary)</th>
                 <th>@Html.DisplayNameFor(e => e.IsActive)</th>
                 <th>@Html.DisplayNameFor(e => e.EmpGender)</th>
+                <th>@Html.DisplayNameFor(e => e.Department)</th>
                 <th>Details </th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -38,6 +39,7 @@
                     <td><i class="fa-solid @(employee.IsActive ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
 </td>
                     <td>@employee.EmpGender</td>
+                    <td>@(string.IsNullOrWhiteSpace(employee.Department)?"No Department" :@employee.Department)</td>
                     @* HERE *@
                     <partial name="_ButtonsPartialView" model="employee.Id"></partial>
 

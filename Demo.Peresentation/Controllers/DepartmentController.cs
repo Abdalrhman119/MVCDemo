@@ -13,7 +13,6 @@ namespace Demo.Presentation.Controllers
     {
         public IActionResult Index()
         {
-
             var departments = _departmentService.GetAllDepartments();
 
             return View(departments);
@@ -42,11 +41,12 @@ namespace Demo.Presentation.Controllers
                         DateOfCreation = departmentVM.DateOfCreation
                     };
                     int res = _departmentService.CreateDepartment(CreateDepartmentDto);
-                    if (res > 0) return RedirectToAction(nameof(Index));
-                    else
-                    {
-                        ModelState.AddModelError(String.Empty, "Error in creating department");
-                    }
+                    var message = string.Empty; 
+                    if (res > 0) message = "Department Created Successfully";
+                    else message = ("Error in creating department");
+                    ViewData["SpecialMsg01"] = message;  
+                    TempData["SpecialMsg02"] = message/*new CreateDepartmentDto() { Description=message}*/;
+                    return RedirectToAction(nameof(Index)); 
                 }
                 catch (Exception ex)
                 {

@@ -1,15 +1,10 @@
 ﻿using Demo.DataAccess.Models.EmployeeModels;
 using Demo.DataAccess.Models.SharedModels;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.BusinessLogic.DTOs.EmployeeDtos
+namespace Demo.Peresentation.ViewModels.EmployeesviewModels
 {
-    public class CreateEmployeeDto
+    public class EmployeeviewModel
     {
         [Required]
         [MaxLength(50, ErrorMessage = "Max length should be 50 character")]
@@ -33,6 +28,7 @@ namespace Demo.BusinessLogic.DTOs.EmployeeDtos
         public DateOnly HiringDate { get; set; }
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
+        [Display(Name = "Department")]
         public int? DepartmentId { get; set; }
     }
 }

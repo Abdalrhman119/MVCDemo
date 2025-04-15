@@ -10,12 +10,14 @@ namespace Demo.BusinessLogic.Profiles
         {
             CreateMap<Employee, GetEmployeeDto>()
                 .ForMember(dest => dest.EmpType, options => options.MapFrom(emp => emp.EmployeeType))
-.ForMember(dest => dest.EmpGender, options => options.MapFrom(emp => emp.Gender));
+.ForMember(dest => dest.EmpGender, options => options.MapFrom(emp => emp.Gender))
+.ForMember(dest=>dest.Department, options => options.MapFrom(emp =>emp.Department!=null? emp.Department.Name:null));
 
             CreateMap<Employee, EmployeeDetailsDto>()
             .ForMember(dest => dest.EmployeeType, options => options.MapFrom(emp => emp.EmployeeType))
 .ForMember(dest => dest.Gender, options => options.MapFrom(emp => emp.Gender))
-.ForMember(dest => dest.HiringDate, options => options.MapFrom(emp => DateOnly.FromDateTime(emp.HiringDate)));
+.ForMember(dest => dest.HiringDate, options => options.MapFrom(emp => DateOnly.FromDateTime(emp.HiringDate)))
+.ForMember(dest => dest.Department, options => options.MapFrom(emp => emp.Department != null ? emp.Department.Name : null));;
 
             CreateMap<CreateEmployeeDto, Employee>()
                 .ForMember(dest => dest.HiringDate, options => options.MapFrom(empDto => empDto.HiringDate.ToDateTime(TimeOnly.MinValue)));

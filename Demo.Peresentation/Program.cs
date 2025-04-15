@@ -21,6 +21,8 @@ namespace Demo.Peresentation
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
+                options.UseLazyLoadingProxies();
+
                 //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
                 //options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStrings"));
             });
