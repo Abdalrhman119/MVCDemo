@@ -9,16 +9,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Demo.DataAccess.Repositories.Classes;
+using Demo.DataAccess.Repositories.Interfaces;
+using Demo.BusinessLogic.Services.AttachmentService;
 
 namespace Demo.BusinessLogic.Services.Classes
 {
-    public class EmployeeService(IEmployeeRepository _employeeRepository,IMapper _mapper) : IEmployeeService
+    public class EmployeeService(IUnitOfWork _uniteOfWork,
+        IMapper _mapper,
+       IAttachmentService attachmentService  ) : IEmployeeService
     {
-        public IEnumerable<GetEmployeeDto> GetAllEmployees()
+        private readonly IAttachmentService _AttachmentService = attachmentService;
+
+        public IEnumerable<GetEmployeeDto> GetAllEmployees(string? EmployeeSearchName)
         {
-            var emps = _employeeRepository.GetAll();
-            return _mapper.Map<IEnumerable<GetEmployeeDto>>(emps);
-//            var employee = _employeeRepository.GetAll(e=>new GetEmployeeDto()
+            IEnumerable<Employee> employees ;
+            if (string.IsNullOrWhiteSpace(EmployeeSearchName)) {
+                employees = _uniteOfWork.EmployeeRepository.GetAll();
+            }
+            else
+            {
+                employees = _uniteOfWork.EmployeeRepository.GetAll(entity => entity.Name.ToLower()
+            .Contains(EmployeeSearchName.ToLower()));
+            }
+            return _mapper.Map<IEnumerable<GetEmployeeDto>>(employees);
+//            var employee = _uniteOfWork.EmployeeRepository.GetAll(e=>new GetEmployeeDto()
 //            {
 //                Id = e.Id,
 //                Name = e.Name,
@@ -29,30 +44,45 @@ namespace Demo.BusinessLogic.Services.Classes
 
         public EmployeeDetailsDto? GetEmployeeById(int id)
         {
-            var emp = _employeeRepository.GetById(id);
+            var emp = _uniteOfWork.EmployeeRepository.GetById(id);
             return emp is null ? null : _mapper.Map<EmployeeDetailsDto>(emp);
         }
 
         public int CreateEmployee(CreateEmployeeDto createEmployeeDto)
         {
             var mappedEmployee = _mapper.Map<Employee>(createEmployeeDto);
-            return _employeeRepository.Add(mappedEmployee);
-           
+            var imageName = _AttachmentService.Upload(createEmployeeDto.Image,"Images");
+            mappedEmployee.ImageName = imageName;
+            _uniteOfWork.EmployeeRepository.Add(mappedEmployee);
+            return _uniteOfWork.SaveChanges();
 
         }
         public int? UpdateEmployee(UpdateEmployeeDto updateEmployeeDto)
         {
             var mappedEmployee = _mapper.Map<Employee>(updateEmployeeDto);
-            return _employeeRepository.Update(mappedEmployee);
+             _uniteOfWork.EmployeeRepository.Update(mappedEmployee);
+            return _uniteOfWork.SaveChanges();
+
         }
         public bool DeleteEmployee(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employee = _uniteOfWork.EmployeeRepository.GetById(id);
             if (employee is null) return false;
-            var res =_employeeRepository.Remove(employee);
-            return res>0? true:false;
+            _uniteOfWork.EmployeeRepository.Remove(employee);
+            return _uniteOfWork.SaveChanges()
+> 0? true:false;
 
         }
+
+        public bool CreatePurchase() {
+            _uniteOfWork.SaveChanges();
+            return true;    
+        }
+
+        public bool DeleteSale()
+        {
+            return true;
+        }   
 
 
     }

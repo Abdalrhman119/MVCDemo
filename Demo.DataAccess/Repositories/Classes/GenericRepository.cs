@@ -1,6 +1,7 @@
 ﻿using Demo.DataAccess.Contexts;
 using Demo.DataAccess.Models.Shared;
 using Demo.DataAccess.Repositories.Interface;
+using System.Linq.Expressions;
 
 namespace Demo.DataAccess.Repositories.Classes
 {
@@ -11,11 +12,19 @@ namespace Demo.DataAccess.Repositories.Classes
         public IEnumerable<TEntity> GetAll(bool withTracking = false)
         {
             if (withTracking)
-                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted == false).ToList();
+                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted != true).ToList();
             else
-                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted == false).AsNoTracking().ToList();
+                return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted != true).AsNoTracking().ToList();
+        }
+        public IEnumerable<TResult> GetAll<TResult>(Expression<Func<TEntity, TResult>> selector)
+        {
+            return dbContext.Set<TEntity>().Select(selector).ToList();
         }
 
+        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> filter)
+        {
+            return dbContext.Set<TEntity>().Where(entity => entity.IsDeleted != true).Where(filter).ToList();
+        }
         // GetById
         public TEntity? GetById(int id)
         {
@@ -23,29 +32,23 @@ namespace Demo.DataAccess.Repositories.Classes
         }
 
         // Add
-        public int Add(TEntity entity)
+        public void Add(TEntity entity)
         {
             dbContext.Set<TEntity>().Add(entity);
-            return dbContext.SaveChanges();
         }
 
         // Update
-        public int Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             dbContext.Set<TEntity>().Update(entity);
-            return dbContext.SaveChanges();
         }
 
         // Delete
-        public int Remove(TEntity entity)
+        public void Remove(TEntity entity)
         {
             dbContext.Set<TEntity>().Remove(entity);
-            return dbContext.SaveChanges();
         }
-        public IEnumerable<TResult> GetAll<TResult>(System.Linq.Expressions.Expression<Func<TEntity, TResult>> selector)
-        {
-            return dbContext.Set<TEntity>()
-                             .Select(selector).ToList();
-        }
+
+
     }
 }

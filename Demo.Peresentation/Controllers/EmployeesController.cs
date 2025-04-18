@@ -15,9 +15,9 @@ namespace Demo.Peresentation.Controllers
         ILogger<DepartmentController> _logger,
         IWebHostEnvironment _env) : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string? EmployeeSearchName)
         {
-            var employees = _employeeService.GetAllEmployees();
+            var employees = _employeeService.GetAllEmployees(EmployeeSearchName);
             return View(employees);
         }
         #region Create Department
@@ -47,7 +47,8 @@ namespace Demo.Peresentation.Controllers
                         EmployeeType = EmployeeVM.EmployeeType,
                         IsActive = EmployeeVM.IsActive,
                         PhoneNumber = EmployeeVM.PhoneNumber,
-                        Salary = EmployeeVM.Salary
+                        Salary = EmployeeVM.Salary,
+                        Image = EmployeeVM.Image
                     };
                     int res = _employeeService.CreateEmployee(createdEmployeeDto);
                     if (res > 0) return RedirectToAction(nameof(Index));
