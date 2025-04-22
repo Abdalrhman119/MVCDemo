@@ -1,10 +1,13 @@
 using Demo.Peresentation.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Demo.Peresentation.Controllers;
+namespace Demo.Peresentation.Controllers
+{
+    [Authorize]
 
-public class HomeController : Controller
+    public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
@@ -28,4 +31,5 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+}
 }
