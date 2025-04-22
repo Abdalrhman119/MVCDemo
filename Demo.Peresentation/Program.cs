@@ -36,18 +36,22 @@ namespace Demo.Peresentation
             //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddAutoMapper(p=>p.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<AppDbContext>()
+            //    .AddDefaultTokenProviders();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 3;
+            })
+.AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
             //builder.Services.ConfigureApplicationCookie(Config =>
             //{
             //    Config.LoginPath = "/Account/LogIn";
             //});
-
-
-
-
-
 
 
 
