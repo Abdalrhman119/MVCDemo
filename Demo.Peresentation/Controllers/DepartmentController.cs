@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Presentation.Controllers
 {
-    ////[Authorize]
+    [Authorize]
 
     public class DepartmentController(IDepartmentService _departmentService,
         ILogger<DepartmentController> _logger,
